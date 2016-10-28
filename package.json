@@ -15,7 +15,6 @@
     "serve-favicon": "~2.3.0",
     "cookie-session": "^2.0.0-alpha.1",
     "co":"^4.6.0",
-    "co-express":"*",
     "request":"^2.76.0"
   }
 }
