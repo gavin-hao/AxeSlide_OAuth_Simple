@@ -78,13 +78,13 @@ router.get('/auth/callback', function (req, res, next) {
     var profile = JSON.parse(user_response.body);
     tokenStore.saveToken(profile.id, token);
     req.logIn(profile);
-    res.render('index', { title: 'Express' });
+    res.redirect('/');
 
   }).catch(err => next(err));
 });
 
 router.get('/profile', authorize(), function (req, res, next) {
-  return res.render('authfail', { title: 'profile', user: req.user });
+  return res.render('profile', { title: 'profile', user: req.user });
 })
 
 router.get('/auth/fail', function (req, res, next) {
