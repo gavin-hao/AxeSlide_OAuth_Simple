@@ -10,7 +10,7 @@ var AccessToken = tokenStore.AccessToken;
 
 const authorieUrl = "http://accounts.axeslide.com/oauth/authorize";
 const tokenUrl = "http://accounts.axeslide.com/oauth/token";
-const userInfoUrl = "http://accounts.axeslide.com/api/me";
+const userInfoUrl = "http://accounts.axeslide.com/api/userinfo";
 
 
 /* GET home page. */
@@ -91,7 +91,11 @@ router.get('/auth/fail', function (req, res, next) {
   return res.status(401).render('authfail', { title: '授权失败' });
 })
 
-
+router.get('/logout', function (req, res, next) {
+  req.session['user']=null;
+  delete req.user;
+  return res.redirect('/');
+})
 
 function authorize(options) {
   if (typeof options == 'string') {
