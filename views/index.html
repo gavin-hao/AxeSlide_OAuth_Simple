@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+	<!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<title>
+		<%= title %>
+	</title>
+
+</head>
+
+<body>
+	<% include nav.html %>
+		<div class="container">
+			<h2 class="page-header">AxeSlide帐号授权demo</h2>
+
+			<div>
+				<h2 class="page-header">接口文档说明</h2>
+				<div class="bs-callout bs-callout-info">
+					<h3>接口地址：</h3> <code> http://openapi.axeslide.com</code></div>
+				<div class="section">
+					<h3>获取文件列表</h3>
+					<p class="lead"><label>GET</label> api/Author/Articles?skip={skip}&rows={rows}</p>
+					<h4>参数</h4>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th> 参数名</th>
+								<th>参数类型</th>
+								<th> 说明</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>skip</td>
+								<td>int</td>
+								<td>用于分页获取，跳过的行数</td>
+							</tr>
+							<tr>
+								<td>rows</td>
+								<td>int</td>
+								<td>用于分页获取，要获取的记录行数</td>
+							</tr>
+						</tbody>
+					</table>
+					<h4>返回值</h4>
+					<pre>
+						{
+  "Count": 2,
+  "Value": [
+    {
+      "Id": 1,
+      "Deleted": true,
+      "AuthorId": 3,
+      "AuthorUrl": "sample string 4,作者的主页链接",
+      "PreviewUrl": "sample string 5，作品的预览图地址",
+      "Title": "sample string 6，作品标题",
+      "ViewCount": 7,
+      "DowloadCount": 8,
+      "ThumbUpCount": 9,
+      "ACL": 1,
+      "CanDownload": true
+     
+    },
+    {
+      ...
+    }
+  ],
+  "Succeed": true,
+  "Message": "sample string 3",
+  "ErrCode": 0
+}
+					</pre>
+				</div>
+					<div class="section">
+					<h3>获取文件下载地址</h3>
+					<p class="lead"><label>GET</label> api/Article/{id}/downloadurl</p>
+					<h4>参数</h4>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th> 参数名</th>
+								<th>参数类型</th>
+								<th> 说明</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>id</td>
+								<td>long</td>
+								<td>作品id</td>
+							</tr>
+						
+						</tbody>
+					</table>
+					<h4>返回值</h4>
+					<pre>
+						{
+  "Value": "http://xxxxxx.com/xxx.dbk,文件下载链接",
+  "Succeed": true,
+  "Message": "sample string 3",
+  "ErrCode": 0
+}
+					</pre>
+				</div>
+			</div>
+		</div>
+</body>
+
+</html>
