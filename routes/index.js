@@ -19,6 +19,9 @@ router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express', user: req.user });
 });
 
+// 第一步：请求CODE
+// redirect_uri 必须填写，与axeslide 开发者中注册的 地址一致
+//  https://accounts.axeside.com/oauth/authorize?client_id=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE
 router.get('/auth/axeslide', function (req, res, next) {
   co(function* () {
     var params = {
@@ -44,6 +47,8 @@ function _request(options) {
     })
   });
 }
+
+// code 换取access_token
 router.get('/auth/callback', function (req, res, next) {
   req.logIn = function (user) {
     req['user'] = req.session['user'] = user;
@@ -63,6 +68,9 @@ router.get('/auth/callback', function (req, res, next) {
       code: code,
       redirect_uri: req.protocol + '://' + req.get('Host') + '/auth/callback'
     };
+    // 第二步：通过code获取access_token
+    //POST http://accounts.axeslide.com/oauth/token；
+    // request body: grant_type=authorization_code&code=your_code&redirect_uri=your_redirect_uri&client_id=appid&client_secret=appsecret
     var response = yield _request({ uri: tokenUrl, method: 'POST', form: params });
     if (response.response.statusCode >= 400) {
       return res.redirect('/auth/fail?error=' + JSON.parse(response.body).error);
@@ -73,9 +81,16 @@ router.get('/auth/callback', function (req, res, next) {
     if (!accessToken) {
       return res.redirect('/auth/fail?error=no_accesstoken');
     }
-
+    
+    // GET http://accounts.axeslide.com/api/userinfo HTTP/1.1
+    // Host: http://accounts.axeslide.com/api/userinfo
+    // Authorization: Bearer your_access_token
     var user_response = yield _request({ uri: userInfoUrl, method: 'GET', headers: { Authorization: 'Bearer ' + accessToken } });
+    if (user_response.response.statusCode >= 400) {
+      return res.redirect('/auth/fail?error=' + JSON.parse(user_response.body).error);
+    }
     var profile = JSON.parse(user_response.body);
+
     tokenStore.saveToken(profile.id, token);
     req.logIn(profile);
     res.redirect('/');
@@ -92,7 +107,7 @@ router.get('/auth/fail', function (req, res, next) {
 })
 
 router.get('/logout', function (req, res, next) {
-  req.session['user']=null;
+  req.session['user'] = null;
   delete req.user;
   return res.redirect('/');
 })
