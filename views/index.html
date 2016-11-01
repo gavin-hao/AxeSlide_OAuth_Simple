@@ -28,7 +28,7 @@
 					<h3>接口地址：</h3> <code> http://openapi.axeslide.com</code></div>
 				<div class="section">
 					<h3>获取文件列表</h3>
-					<p class="lead"><label>GET</label> api/Author/Articles?skip={skip}&rows={rows}</p>
+					<p class="lead"><label>GET</label> api/v1/Author/Articles?skip={skip}&rows={rows}</p>
 					<h4>参数</h4>
 					<table class="table table-hover">
 						<thead>
@@ -57,22 +57,25 @@
   "Count": 2,
   "Value": [
     {
-      "Id": 1,
-      "AuthorId": 3,
-      "AuthorUrl": "sample string 4,作者的主页链接",
-      "PreviewUrl": "sample string 5，作品的预览图地址",
-      "Title": "sample string 6，作品标题",
-      "Description": "sample string 6，作品描述",
-      "Keywords": "sample string 6，标签",
+     "Id": 1,
+      "AuthorId": 2,
+      "AuthorUrl": "作者的主页链接",
+      "PreviewUrl": "作品的预览图地址",
+      "Title": "作品标题",
+      "Description": "作品描述",
+      "Keywords": [
+        "标签1",
+        "标签2",
+        "标签3"
+      ],
       "ViewCount": 7,
       "DowloadCount": 8,
       "ThumbUpCount": 9,
-      "FileSize":5704865
-      "CreateTime": DateTime('2016-10-27 17:00:00')
-     
-    },
-    {
-      ...
+      "FileSize": 10,
+      "CreateTime": "2016-11-01T11:43:58.6737236+08:00",
+      "ACL": 1,
+      "CanDownload": true
+      
     }
   ],
   "Succeed": true,
@@ -83,7 +86,7 @@
 				</div>
 					<div class="section">
 					<h3>获取文件下载地址</h3>
-					<p class="lead"><label>GET</label> api/Article/{id}/downloadurl</p>
+					<p class="lead"><label>GET</label> api/v1/Article/{id}/downloadurl</p>
 					<h4>参数</h4>
 					<table class="table table-hover">
 						<thead>
@@ -108,6 +111,57 @@
   "Value": "http://xxxxxx.com/xxx.dbk,文件下载链接",
   "Succeed": true,
   "Message": "sample string 3",
+  "ErrCode": 0
+}
+					</pre>
+				</div>
+				<div class="section">
+					<h3>获取作品详情</h3>
+					<p class="lead"><label>GET</label> api/v1/Article/{articleId}</p>
+					<h4>参数</h4>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th> 参数名</th>
+								<th>参数类型</th>
+								<th> 说明</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>articleId</td>
+								<td>long</td>
+								<td>作品id</td>
+							</tr>
+						
+						</tbody>
+					</table>
+					<h4>返回值</h4>
+					<pre>
+						{
+  "Value": {
+    "Id": 1,
+    "AuthorId": 2,
+    "AuthorUrl": "sample string 3",
+    "PreviewUrl": "sample string 4",
+    "Title": "sample string 5",
+    "Description": "sample string 6",
+    "Keywords": [
+      "sample string 1",
+      "sample string 2",
+      "sample string 3"
+    ],
+    "ViewCount": 7,
+    "DowloadCount": 8,
+    "ThumbUpCount": 9,
+    "FileSize": 10,
+    "CreateTime": "2016-11-01T11:43:40.5932918+08:00",
+    "ACL": 12,
+    "CanDownload": true,
+    "DownloadUrl": "sample string 14"
+  },
+  "Succeed": true,
+  "Message": "sample string 2",
   "ErrCode": 0
 }
 					</pre>

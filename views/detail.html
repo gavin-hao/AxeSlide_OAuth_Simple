@@ -24,18 +24,18 @@
 			<hr>
 			<div class="row">
 				<%if(data){%>
-				<% eval(data).forEach(function(listitem,index){%>
-				<div class="col-sm-6 col-md-4">
-					<div class="thumbnail">
-						<img src="<%=listitem.PreviewUrl%>" alt="...">
+				<div class="col-sm-6">
+					<div class="well">
+						<img style="max-width:300px" src="<%=data.PreviewUrl%>" alt="...">
 						<div class="caption">
-							<h3><%=listitem.Title%></h3>
-							<p><%=listitem.Description%></p>
-							<p><a href="/detail?id=<%=listitem.Id%>" class="btn btn-primary" role="button">详情</a> <a href="/download?id=<%=listitem.Id%>" class="btn btn-default" role="button">下载</a></p>
+							<h3>标题： <%=data.Title%></h3>
+							<p>描述： <%=data.Description%></p>
+                            <p>Keywords: <%=data.Keywords[0]%></p>
+                            <p>FileSize: <%=data.FileSize%></p>
 						</div>
 					</div>
 				</div>
-				<%})}%>
+				<%}%>
 			</div>
 
 		</div>

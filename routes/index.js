@@ -81,7 +81,7 @@ router.get('/auth/callback', function (req, res, next) {
     if (!accessToken) {
       return res.redirect('/auth/fail?error=no_accesstoken');
     }
-    
+
     // GET http://accounts.axeslide.com/api/userinfo HTTP/1.1
     // Host: http://accounts.axeslide.com/api/userinfo
     // Authorization: Bearer your_access_token
@@ -91,7 +91,7 @@ router.get('/auth/callback', function (req, res, next) {
     }
     var profile = JSON.parse(user_response.body);
 
-    tokenStore.saveToken(profile.id, token);
+    yield tokenStore.saveToken(profile.id, token);
     req.logIn(profile);
     res.redirect('/');
 
@@ -99,9 +99,62 @@ router.get('/auth/callback', function (req, res, next) {
 });
 
 router.get('/profile', authorize(), function (req, res, next) {
-  return res.render('profile', { title: 'profile', user: req.user });
-})
+  co(function* () {
+    var url = "http://openapi.axeslide.com/api/v1/Author/Articles?skip=0&rows=20";
+    var tokenData = yield tokenStore.getToken(req.user.id);
+    if (!tokenData) {
+      req.session['user'] = null;
+      delete req.user;
+      return res.redirect('/');
+    }
+    var token = new AccessToken(tokenData)
+    if (!token.isValid()) {
+      //todo refresh token;
+      var params = {
+        client_id: axeslide.appid,
+        client_secret: axeslide.appsecret,
+        grant_type: 'refresh_token',
+        refresh_token: token.data.refresh_token,
+        redirect_uri: req.protocol + '://' + req.get('Host') + '/auth/callback'
+      };
+      var tokenResp = yield _request({ uri: tokenUrl, method: 'POST', form: params });
+      var dd = JSON.parse(tokenResp.body);
 
+      yield tokenStore.saveToken(req.user.id, dd);
+    }
+    var newToken = yield tokenStore.getToken(req.user.id);
+    token = new AccessToken(newToken)
+    var resp = yield _request({ uri: url, method: 'GET', headers: { Authorization: 'Bearer ' + token.data.access_token } });
+    var articles = JSON.parse(resp.body);
+    var data = [];
+    if (articles.Value && articles.Value.Articles)
+      data = articles.Value.Articles;
+    return res.render('profile', { title: 'profile', user: req.user, data: data || [] });
+
+  })
+})
+router.get('/download', authorize(), function (req, res, next) {
+  co(function* () {
+    var d = yield tokenStore.getToken(req.user.id);
+    var token = new AccessToken(d);
+    var docId = req.query.id || '';
+    var url = "http://openapi.axeslide.com/api/v1/Article/" + docId + "/downloadurl";
+    var resp = yield _request({ uri: url, method: 'GET', headers: { Authorization: 'Bearer ' + token.data.access_token } });
+    var dldUrl = JSON.parse(resp.body).Value;
+    return res.redirect(dldUrl);
+  })
+});
+router.get('/detail', authorize(), function (req, res, next) {
+  co(function* () {
+    var d = yield tokenStore.getToken(req.user.id);
+    var token = new AccessToken(d);
+    var docId = req.query.id || '';
+    var url = "http://openapi.axeslide.com/api/v1/Article/" + docId ;
+    var resp = yield _request({ uri: url, method: 'GET', headers: { Authorization: 'Bearer ' + token.data.access_token } });
+    var data = JSON.parse(resp.body).Value;
+    return res.render('detail', { title: 'profile', user: req.user, data: data || [] });
+  })
+});
 router.get('/auth/fail', function (req, res, next) {
   return res.status(401).render('authfail', { title: '授权失败' });
 })

@@ -11,13 +11,21 @@
 			<a class="navbar-brand" href="#">AxeSlide</a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li><a href="/profile">我的文档</a></li>
+
+			</ul>
 			<%if((typeof user=='undefined')||!user||!user.id){%>
 				<form class="navbar-form navbar-left navbar-right" action="/auth/axeslide" method="GET" role="search">
 					<button type="submit" class="btn btn-danger">AxeSlide帐号登录</button>
 				</form>
 				<%}else{%>
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#"><%=user.nickname%></a></li>
+						<li>
+							<a href="#">
+								<%=user.nickname%>
+							</a>
+						</li>
 						<li><a href="/logout">退出</a></li>
 					</ul>
 					<%}%>
